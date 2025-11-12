@@ -68,7 +68,7 @@ struct ContentView: View {
                 }
             }
             ToolbarItem(placement: .navigationBarTrailing) {
-                if selectedSide != nil {
+                if selectedSide != nil && client.connectionState == .ready{
                     Button(role: .destructive) {
                         selectedSide = nil
                         client.send("LEAVE:\(player.name)")
