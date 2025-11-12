@@ -6,19 +6,51 @@
 //
 
 import SwiftUI
+import Network
 
 struct ContentView: View {
+    @StateObject var client = GameClient()
+    var player: PlayerModel
+
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("Jogador: \(player.name)")
+                .font(.largeTitle)
+            
+            if client.connectionState != .ready {
+                List(client.availableServers, id: \.self) { server in
+                    Button("Conectar a \(formatName(server))") {
+                        client.connect(to: server)
+                    }
+                }
+            }
+
+
+            Button("Desconectar") {
+                client.disconnect()
+            }
+            Button("Enviar comando: Jump") {
+                client.send("jump")
+            }
+            .padding()
         }
-        .padding()
+        .onAppear {
+            client.startBrowser()
+        }
+        .navigationBarBackButtonHidden(true)
+    }
+    
+
+    func formatName(_ result: NWBrowser.Result) -> String {
+        switch result.endpoint {
+            case let .service(name, _, _, _): return name
+            default: return "Desconhecido"
+        }
     }
 }
 
-#Preview {
-    ContentView()
-}
+
+//#Preview {
+//    @Previewable var nomeDoUsuario: String = "Gugas"
+//    ContentView(nomeDoUsuario: .constant(nomeDoUsuario))
+//}
