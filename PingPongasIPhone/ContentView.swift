@@ -38,7 +38,7 @@ struct ContentView: View {
                 
             } else {
                 
-                // --- O CONTROLE ---
+                // O CONTROLE
                 GeometryReader { geometry in
                     VStack(spacing: 0) {
                         
@@ -67,7 +67,6 @@ struct ContentView: View {
                 }
                 .edgesIgnoringSafeArea(.bottom)
 
-                // Botão de Desconectar
                 Button("Desconectar") {
                     client.disconnect()
                 }
@@ -105,7 +104,6 @@ struct ContentView: View {
         }
     }
     
-    // Função para formatar o nome do servidor Bonjour
     func formatName(_ result: NWBrowser.Result) -> String {
         switch result.endpoint {
             case let .service(name, _, _, _): return name

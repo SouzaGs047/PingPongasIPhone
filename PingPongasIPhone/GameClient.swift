@@ -4,7 +4,7 @@
 //
 //  Created by Gustavo Souza Santana on 11/11/25.
 //
-//  CORRIGIDO: 'contentProcessed'
+//
 //
 
 import Foundation
@@ -39,8 +39,6 @@ class GameClient: ObservableObject {
         print("Busca iniciada.")
     }
     
-    // Em GameClient.swift
-    
     func connect(to result: NWBrowser.Result) {
         guard case let NWEndpoint.service(name: name, type: _, domain: _, interface: _) = result.endpoint else {
             print("Falha ao extrair endpoint.")
@@ -54,8 +52,6 @@ class GameClient: ObservableObject {
         
         connection = NWConnection(to: result.endpoint, using: .tcp)
         
-        // --- CORREÇÃO AQUI ---
-        // Substituímos o 'if/else' por um 'switch'
         connection?.stateUpdateHandler = { [weak self] state in
             DispatchQueue.main.async {
                 self?.connectionState = state
@@ -63,24 +59,19 @@ class GameClient: ObservableObject {
                 
                 switch state {
                 case .ready:
-                    // Conectado com sucesso!
                     self?.availableServers = []
                     
                 case .failed(_), .cancelled:
-                    // Se falhar ou for cancelado, desconecta
                     self?.handleDisconnect()
                     
                 case .preparing, .setup, .waiting:
-                    // Estamos conectando, não faz nada
                     break
                     
                 @unknown default:
-                    // Para casos futuros que a Apple adicionar
                     break
                 }
             }
         }
-        // --- FIM DA CORREÇÃO ---
         
         connection?.start(queue: .main)
         receive()
@@ -106,12 +97,9 @@ class GameClient: ObservableObject {
         guard let conn = connection, connectionState == .ready else { return }
         let data = text.data(using: .utf8)!
         
-        // --- CORREÇÃO 4 ---
-        // Sendo explícito sobre o tipo 'NWConnection.SendCompletion'
         conn.send(content: data, completion: NWConnection.SendCompletion.contentProcessed { error in
             if let error = error {
                 print("Erro ao enviar: \(error)")
-                // Usar self?. para evitar retain cycle, embora seja rápido
                 DispatchQueue.main.async {
                     self.handleDisconnect()
                 }
