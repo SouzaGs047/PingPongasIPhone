@@ -13,7 +13,9 @@ import Network
 struct ContentView: View {
     @StateObject var client = GameClient()
     var player: PlayerModel
-
+    @State private var selectedSide: String? = nil
+    @State private var readyToPlay: Bool = false
+    
     var body: some View {
         VStack(spacing: 0) {
             
@@ -72,11 +74,35 @@ struct ContentView: View {
                 .padding()
                 .foregroundColor(.red)
             }
+            
+            Spacer()
         }
         .onAppear {
             client.startBrowser()
         }
         .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                if client.connectionState == .ready {
+                    Button(role: .destructive) {
+                        client.disconnect()
+                    } label: {
+                        Text("Desconectar")
+                    }
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if selectedSide != nil && client.connectionState == .ready{
+                    Button(role: .destructive) {
+                        selectedSide = nil
+                        client.send("LEAVE:\(player.name)")
+                    } label: {
+                        Text("Sair da equipe")
+                    }
+                }
+
+            }
+        }
     }
     
     // Função para formatar o nome do servidor Bonjour
@@ -87,3 +113,10 @@ struct ContentView: View {
         }
     }
 }
+
+
+//#Preview {
+//    @Previewable var nomeDoUsuario: String = "Gugas"
+//    ContentView(nomeDoUsuario: .constant(nomeDoUsuario))
+//}
+
