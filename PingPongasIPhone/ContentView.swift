@@ -4,6 +4,8 @@
 //
 //  Created by Gustavo Souza Santana on 11/11/25.
 //
+//  MODIFICADO: Agora é o controle do jogo
+//
 
 import SwiftUI
 import Network
@@ -13,26 +15,63 @@ struct ContentView: View {
     var player: PlayerModel
 
     var body: some View {
-        VStack {
-            Text("Jogador: \(player.name)")
-                .font(.largeTitle)
+        VStack(spacing: 0) {
             
+            // --- Tela de Conexão ---
             if client.connectionState != .ready {
-                List(client.availableServers, id: \.self) { server in
-                    Button("Conectar a \(formatName(server))") {
-                        client.connect(to: server)
+                VStack {
+                    Text("Jogador: \(player.name)")
+                        .font(.largeTitle)
+                        .padding()
+                    
+                    Text("Procurando Apple TV...")
+                        .font(.headline)
+                    
+                    List(client.availableServers, id: \.self) { server in
+                        Button("Conectar a \(formatName(server))") {
+                            client.connect(to: server)
+                        }
                     }
                 }
-            }
+                
+            } else {
+                
+                // --- O CONTROLE ---
+                GeometryReader { geometry in
+                    VStack(spacing: 0) {
+                        
+                        // Botão CIMA
+                        Button(action: { client.send("up") }) {
+                            Rectangle()
+                                .fill(Color.blue.opacity(0.4))
+                                .overlay(
+                                    Image(systemName: "arrow.up")
+                                        .font(.system(size: 80, weight: .bold))
+                                        .foregroundColor(.white)
+                                )
+                        }
+                        
+                        // Botão BAIXO
+                        Button(action: { client.send("down") }) {
+                            Rectangle()
+                                .fill(Color.green.opacity(0.4))
+                                .overlay(
+                                    Image(systemName: "arrow.down")
+                                        .font(.system(size: 80, weight: .bold))
+                                        .foregroundColor(.white)
+                                )
+                        }
+                    }
+                }
+                .edgesIgnoringSafeArea(.bottom)
 
-
-            Button("Desconectar") {
-                client.disconnect()
+                // Botão de Desconectar
+                Button("Desconectar") {
+                    client.disconnect()
+                }
+                .padding()
+                .foregroundColor(.red)
             }
-            Button("Enviar comando: Jump") {
-                client.send("jump")
-            }
-            .padding()
         }
         .onAppear {
             client.startBrowser()
@@ -40,17 +79,11 @@ struct ContentView: View {
         .navigationBarBackButtonHidden(true)
     }
     
-
+    // Função para formatar o nome do servidor Bonjour
     func formatName(_ result: NWBrowser.Result) -> String {
         switch result.endpoint {
             case let .service(name, _, _, _): return name
-            default: return "Desconhecido"
+            default: return "Servidor Desconhecido"
         }
     }
 }
-
-
-//#Preview {
-//    @Previewable var nomeDoUsuario: String = "Gugas"
-//    ContentView(nomeDoUsuario: .constant(nomeDoUsuario))
-//}
