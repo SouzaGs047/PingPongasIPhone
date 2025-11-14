@@ -12,9 +12,12 @@ import Network
 
 struct ContentView: View {
     @StateObject var client = GameClient()
-    var player: PlayerModel
+    @State var player: PlayerModel
     @State private var selectedSide: String? = nil
     @State private var readyToPlay: Bool = false
+    
+    @State private var gameStarted = false
+
     
     var body: some View {
         VStack(spacing: 0) {
@@ -35,56 +38,79 @@ struct ContentView: View {
                         }
                     }
                 }
-                
             } else {
-                
-                // --- O CONTROLE ---
-                GeometryReader { geometry in
-                    VStack(spacing: 0) {
-                        
-                        // Botão CIMA
-                        Button(action: { client.send("up") }) {
-                            Rectangle()
-                                .fill(Color.blue.opacity(0.4))
-                                .overlay(
-                                    Image(systemName: "arrow.up")
-                                        .font(.system(size: 80, weight: .bold))
-                                        .foregroundColor(.white)
-                                )
+                if selectedSide == nil {
+                    Text("Escolha seu lado:")
+                        .font(.headline)
+                    HStack {
+                        Button("Lado Esquerdo") {
+                            selectedSide = "left"
+                            client.send("JOIN:left:\(player.name)")
+                            
                         }
+                        .buttonStyle(.borderedProminent)
                         
-                        // Botão BAIXO
-                        Button(action: { client.send("down") }) {
-                            Rectangle()
-                                .fill(Color.green.opacity(0.4))
-                                .overlay(
-                                    Image(systemName: "arrow.down")
-                                        .font(.system(size: 80, weight: .bold))
-                                        .foregroundColor(.white)
-                                )
+                        Button("Lado Direito") {
+                            selectedSide = "right"
+                            client.send("JOIN:right:\(player.name)")
                         }
+                        .buttonStyle(.borderedProminent)
                     }
+                    Spacer()
+                } else {
+                    Text("Você está no lado \(selectedSide == "left" ? "Esquerdo" : "Direito")")
+                    Spacer()
+                    Button {
+                        readyToPlay.toggle()
+                        
+                        let message = "READY:\(readyToPlay ? "1" : "0")"
+                        client.send(message)
+                        
+                    } label: {
+                        HStack {
+                            Text("Pronto")
+                        }
+                        .padding()
+                        .foregroundStyle(.white)
+                        .background(readyToPlay ? Color.green : Color.blue)
+                        .cornerRadius(25)
+                    }
+                    .padding()
                 }
-                .edgesIgnoringSafeArea(.bottom)
-
-                // Botão de Desconectar
-                Button("Desconectar") {
-                    client.disconnect()
-                }
-                .padding()
-                .foregroundColor(.red)
             }
-            
-            Spacer()
         }
         .onAppear {
             client.startBrowser()
         }
+        .onChange(of: client.gameStarted) {
+            if client.gameStarted {
+                gameStarted = true
+            }
+        }
+        .navigationDestination(isPresented: $gameStarted) {
+            ControlerView(
+                client: client,
+                player: $player,
+                selectedSide: $selectedSide,
+                readyToPlay: $readyToPlay,
+                gameStarted: $gameStarted
+            )
+        }
+
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 if client.connectionState == .ready {
                     Button(role: .destructive) {
+                        selectedSide = nil
+                        
+                        readyToPlay = false
+                        
+                        client.send("READY:0")
+                        
+                        client.send("LEAVE:\(player.name)")
+                        
+                        
                         client.disconnect()
                     } label: {
                         Text("Desconectar")
@@ -95,12 +121,17 @@ struct ContentView: View {
                 if selectedSide != nil && client.connectionState == .ready{
                     Button(role: .destructive) {
                         selectedSide = nil
+                        
+                        readyToPlay = false
+                       
+                        client.send("READY:0")
+                        
                         client.send("LEAVE:\(player.name)")
                     } label: {
                         Text("Sair da equipe")
                     }
                 }
-
+                
             }
         }
     }
@@ -108,15 +139,15 @@ struct ContentView: View {
     // Função para formatar o nome do servidor Bonjour
     func formatName(_ result: NWBrowser.Result) -> String {
         switch result.endpoint {
-            case let .service(name, _, _, _): return name
-            default: return "Servidor Desconhecido"
+        case let .service(name, _, _, _): return name
+        default: return "Servidor Desconhecido"
         }
     }
 }
 
 
-//#Preview {
-//    @Previewable var nomeDoUsuario: String = "Gugas"
-//    ContentView(nomeDoUsuario: .constant(nomeDoUsuario))
-//}
+#Preview {
+    
+    ContentView(player: PlayerModel(name: "Gugas"))
+}
 
