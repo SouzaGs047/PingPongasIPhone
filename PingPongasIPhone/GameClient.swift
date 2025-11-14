@@ -4,7 +4,7 @@
 //
 //  Created by Gustavo Souza Santana on 11/11/25.
 //
-//  CORRIGIDO: 'contentProcessed'
+//
 //
 
 import Foundation
@@ -38,8 +38,6 @@ class GameClient: ObservableObject {
         browser.start(queue: .main)
         print("Busca iniciada.")
     }
-    
-    // Em GameClient.swift
     
     func connect(to result: NWBrowser.Result) {
         guard case let NWEndpoint.service(name: name, type: _, domain: _, interface: _) = result.endpoint else {
@@ -78,7 +76,6 @@ class GameClient: ObservableObject {
 //                }
             }
         }
-        // --- FIM DA CORREÇÃO ---
         
         connection?.start(queue: .main)
         receive()

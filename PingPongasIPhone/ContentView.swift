@@ -136,7 +136,6 @@ struct ContentView: View {
         }
     }
     
-    // Função para formatar o nome do servidor Bonjour
     func formatName(_ result: NWBrowser.Result) -> String {
         switch result.endpoint {
         case let .service(name, _, _, _): return name
