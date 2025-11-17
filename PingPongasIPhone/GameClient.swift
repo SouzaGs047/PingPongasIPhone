@@ -89,11 +89,13 @@ class GameClient: ObservableObject {
         connection = nil
         
         DispatchQueue.main.async {
+            self.gameStarted = false      // 👈 garante que o estado de jogo é resetado
             self.connectionState = .setup
             self.startBrowser()
         }
         print("Desconectado. Reiniciando a busca.")
     }
+
     
     func disconnect() {
         print("Desconectando manualmente...")

@@ -73,24 +73,40 @@ struct ControlerView: View {
             stopUp()
             stopDown()
         }
+        // Quando a TV manda START/STOP
         .onChange(of: client.gameStarted) {
             selectedSide = nil
             
             client.send("LEAVE:\(player.name)")
             
-            client.disconnect()
+            
             client.gameStarted = false
             gameStarted = false
-        }
-        .onChange(of:client.connectionState) {
-            selectedSide = nil
-            
-            client.send("LEAVE:\(player.name)")
-            
+            readyToPlay = false
             client.disconnect()
-            client.gameStarted = false
-            gameStarted = false
         }
+        
+        
+        // Quando o estado da conexão com a TV muda
+        .onChange(of: client.connectionState) { state in
+            switch state {
+            case .failed, .cancelled:
+                selectedSide = nil
+                
+                client.send("LEAVE:\(player.name)")
+                
+                
+                client.gameStarted = false
+                gameStarted = false
+                readyToPlay = false
+                
+                client.disconnect()
+            default:
+                break
+            }
+        }
+        
+        
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 if client.connectionState == .ready {
