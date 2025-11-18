@@ -2,10 +2,8 @@
 //  GameClient.swift
 //  PingPongasIPhone
 //
-//  Created by Gustavo Souza Santana on 11/11/25.
-//
-//  CORRIGIDO: 'contentProcessed'
-//
+//  Created by Gustavo Souza Santana.
+//  Created by Ruan Lopes Viana.
 
 import Foundation
 import Network
@@ -58,27 +56,8 @@ class GameClient: ObservableObject {
             DispatchQueue.main.async {
                 self?.connectionState = state
                 print("Conexão mudou:", state)
-                
-//                switch state {
-//                case .ready:
-//                    // Conectado com sucesso!
-//                    self?.availableServers = []
-//
-//                case .failed(_), .cancelled:
-//                    // Se falhar ou for cancelado, desconecta
-//                    self?.handleDisconnect()
-//
-//                case .preparing, .setup, .waiting:
-//                    // Estamos conectando, não faz nada
-//                    break
-//
-//                @unknown default:
-//                    // Para casos futuros que a Apple adicionar
-//                    break
-//                }
             }
         }
-        // --- FIM DA CORREÇÃO ---
         
         connection?.start(queue: .main)
         receive()
@@ -89,7 +68,7 @@ class GameClient: ObservableObject {
         connection = nil
         
         DispatchQueue.main.async {
-            self.gameStarted = false      // 👈 garante que o estado de jogo é resetado
+            self.gameStarted = false      
             self.connectionState = .setup
             self.startBrowser()
         }

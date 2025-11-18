@@ -2,10 +2,8 @@
 //  ContentView.swift
 //  PingPongasIPhone
 //
-//  Created by Gustavo Souza Santana on 11/11/25.
-//
-//  MODIFICADO: Agora é o controle do jogo
-//
+//  Created by Gustavo Souza Santana.
+//  Created by Ruan Lopes Viana.
 
 import SwiftUI
 import Network

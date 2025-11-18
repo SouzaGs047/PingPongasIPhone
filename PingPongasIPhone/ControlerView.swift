@@ -2,8 +2,9 @@
 //  ControlerView.swift
 //  PingPongasIPhone
 //
-//  Created by Gustavo Souza Santana on 13/11/25.
-//
+//  Created by Gustavo Souza Santana.
+//  Created by Ruan Lopes Viana.
+
 import SwiftUI
 import Network
 
@@ -23,7 +24,6 @@ struct ControlerView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                // --- Área UP ---
                 Rectangle()
                     .fill(Color.blue.opacity(0.4))
                     .overlay(
@@ -32,8 +32,8 @@ struct ControlerView: View {
                             .foregroundColor(.white)
                     )
                     .onLongPressGesture(
-                        minimumDuration: 0,         // dispara imediatamente
-                        maximumDistance: .infinity, // pode segurar e arrastar um pouco
+                        minimumDuration: 0,
+                        maximumDistance: .infinity,
                         pressing: { isPressing in
                             if isPressing {
                                 startUp()
@@ -44,7 +44,6 @@ struct ControlerView: View {
                         perform: {}
                     )
                 
-                // --- Área DOWN ---
                 Rectangle()
                     .fill(Color.green.opacity(0.4))
                     .overlay(
@@ -69,7 +68,6 @@ struct ControlerView: View {
         .edgesIgnoringSafeArea(.bottom)
         .navigationBarBackButtonHidden(true)
         .onDisappear {
-            // Garante que os timers parem se a tela sumir
             stopUp()
             stopDown()
         }
@@ -124,9 +122,8 @@ struct ControlerView: View {
     // MARK: - Contínuo UP
     
     private func startUp() {
-        guard upTimer == nil else { return } // já está rodando
+        guard upTimer == nil else { return }
         
-        // manda logo um primeiro comando
         client.send("up")
         
         upTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 20.0, repeats: true) { _ in
