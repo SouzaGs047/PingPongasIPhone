@@ -22,7 +22,11 @@ class GameClient: ObservableObject {
         guard browser == nil else { return }
         
         let params = NWParameters.tcp
-        let browser = NWBrowser(for: .bonjour(type: "_pocgame._tcp", domain: nil),using: params)
+        let browser = NWBrowser(
+            for: .bonjour(type: "_pocgame._tcp", domain: nil),
+            using: NWParameters()
+        )
+
         self.browser = browser
         
         browser.browseResultsChangedHandler = { [weak self] results, _ in
