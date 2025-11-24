@@ -268,7 +268,7 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PingPongasIPhone/Info.plist;
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "\"O app precisa se conectar à Apple TV para jogar Pong.\"";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "O app precisa se conectar à Apple TV para jogar Pong";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -315,7 +315,7 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PingPongasIPhone/Info.plist;
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "\"O app precisa se conectar à Apple TV para jogar Pong.\"";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "O app precisa se conectar à Apple TV para jogar Pong";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
